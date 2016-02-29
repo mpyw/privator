@@ -129,6 +129,7 @@ trait Proxy {
                         } catch (ProxyException $e) {
                             try {
                                 $this->__call('__set', [$name, $value]);
+                                return;
                             } catch (ProxyException $_) { }
                             if (isset($property)) {
                                 throw $e;
