@@ -14,12 +14,18 @@
         "php": ">=7.0.0"
     },
     "require-dev": {
-        "codeception/codeception": "*"
+        "codeception/codeception": "*",
+        "satooshi/php-coveralls": "^1.0"
     },
     "autoload": {
         "psr-4": {
             "mpyw\\Privator\\": "src/"
         }
+    },
+    "scripts": {
+        "test": [
+            "php vendor/bin/codecept run unit --coverage --coverage-xml"
+        ]
     },
     "archive": {
         "exclude": [
