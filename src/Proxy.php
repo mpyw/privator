@@ -30,7 +30,7 @@ class Proxy
                     return $rm->invokeArgs(null, $args);
                 }
                 if (method_exists($rc->getName(), '__callStatic')) {
-                    return $this->__callStatic('__callStatic', $args);
+                    return $rc->getName()::$name(...$args);
                 }
                 throw new ProxyException(
                     "Call to undefined method: {$rc->getName()}::$name()");
@@ -89,7 +89,7 @@ class Proxy
                             return $rm->invokeArgs($this->ins, $args);
                         }
                         if (method_exists($this->ro->getName(), '__call')) {
-                            return $this->__call('__call', $args);
+                            return $this->ins->$name(...$args);
                         }
                         throw new ProxyException(
                             "Call to undefined method: " .
