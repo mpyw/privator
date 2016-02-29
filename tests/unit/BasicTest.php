@@ -2,6 +2,7 @@
 
 require __DIR__ . '/BasicClass.php';
 
+use mpyw\Privator\Proxy;
 use mpyw\Privator\ProxyException;
 
 /**
@@ -9,11 +10,9 @@ use mpyw\Privator\ProxyException;
  */
 class BasicTest extends \Codeception\TestCase\Test
 {
-    use mpyw\Privator\Proxy;
-
     public function _before()
     {
-        $this->Basic = self::getProxy(Basic::class);
+        $this->Basic = Proxy::get(Basic::class);
     }
 
     public function testNewWithoutConstructor()

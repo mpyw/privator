@@ -1,6 +1,6 @@
 {
     "name": "mpyw/privator",
-    "description": "Traits for testing private methods and properties on PHP 7.0+",
+    "description": "Utils for testing private methods and properties on PHP 7.0+",
     "type": "library",
     "license": "MIT",
     "keywords": ["test", "private"],

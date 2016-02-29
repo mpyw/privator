@@ -2,4 +2,4 @@
 
 namespace mpyw\Privator;
 
-class ProxyException extends \LogicException {}
+class ProxyException extends \LogicException { }

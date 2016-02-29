@@ -2,6 +2,7 @@
 
 require __DIR__ . '/MagicClass.php';
 
+use mpyw\Privator\Proxy;
 use mpyw\Privator\ProxyException;
 
 /**
@@ -9,10 +10,8 @@ use mpyw\Privator\ProxyException;
  */
 class MagicTest extends \Codeception\TestCase\Test
 {
-    use mpyw\Privator\Proxy;
-
     public function _before()
     {
-        $this->Magic = self::getProxy(Magic::class);
+        $this->Magic = Proxy::get(Magic::class);
     }
 }

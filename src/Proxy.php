@@ -4,12 +4,12 @@ namespace mpyw\Privator;
 
 use mpyw\Privator\ProxyException;
 
-trait Proxy {
-
-    private static function getProxy(string $classname)
+class Proxy
+{
+    public static function get(string $classname)
     {
-        return new class($classname) {
-
+        return new class($classname)
+        {
             private static $rc;
 
             public function __construct(string $classname)
@@ -66,8 +66,8 @@ trait Proxy {
 
             public static function new(array $args = null)
             {
-                return new class(self::$rc, $args) {
-
+                return new class(self::$rc, $args)
+                {
                     private $ro;
                     private $ins;
 
@@ -138,11 +138,8 @@ trait Proxy {
                             }
                         }
                     }
-
                 };
             }
-
         };
     }
-
 }
