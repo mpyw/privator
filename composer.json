@@ -1,0 +1,31 @@
+{
+    "name": "mpyw/privator",
+    "description": "Traits for testing private methods and properties on PHP 7.0+",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["test", "private"],
+    "authors": [
+        {
+            "name": "mpyw",
+            "email": "ryosuke_i_628@yahoo.co.jp"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "codeception/codeception": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "mpyw\\Privator\\": "src/"
+        }
+    },
+    "archive": {
+        "exclude": [
+            "*",
+            ".*",
+            "!/src/*"
+        ]
+    }
+}
