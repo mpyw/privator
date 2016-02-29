@@ -1,7 +1,7 @@
 <?php
 
-class Magic {
-
+class Magic
+{
     public function __call(string $name, array $args)
     {
     }
@@ -17,5 +17,4 @@ class Magic {
     public function __set(string $name, $value)
     {
     }
-
 }

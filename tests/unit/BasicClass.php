@@ -1,7 +1,7 @@
 <?php
 
-class Basic {
-
+class Basic
+{
     private static $privateStaticProperty = 'privateStaticPropertyValue';
     private $privateProperty = 'privatePropertyValue';
 
@@ -16,5 +16,4 @@ class Basic {
     {
         return "privateMethod($arg) called";
     }
-
 }

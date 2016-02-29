@@ -7,8 +7,8 @@ use mpyw\Privator\ProxyException;
 /**
  * @requires PHP 7.0
  */
-class BasicTest extends \Codeception\TestCase\Test {
-
+class BasicTest extends \Codeception\TestCase\Test
+{
     use mpyw\Privator\Proxy;
 
     public function _before()
@@ -162,5 +162,4 @@ class BasicTest extends \Codeception\TestCase\Test {
         $return = $this->Basic->new()->privateMethod("test");
         $this->assertEquals("privateMethod(test) called", $return);
     }
-
 }
