@@ -7,12 +7,7 @@ Traits for testing private methods and properties on PHP 7.0+
 Install via Composer.
 
 ```sh
-# I only need this library!
-composer require mpyw/privator:@dev
-
-# I need both this library and utils for testing.
-# composer require mpyw/privator:@dev
-# composer install
+composer require mpyw/privator:@dev --dev
 ```
 
 ## Usage
