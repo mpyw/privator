@@ -19,39 +19,39 @@ class Proxy
 
             public static function __callStatic(string $name, array $args) {
                 $rc = self::$rc;
-                if (method_exists($rc->getName(), $name)) {
+                if (method_exists($rc->name, $name)) {
                     $rm = $rc->getMethod($name);
                     if (!$rm->isStatic()) {
                         throw new ProxyException(
                             "Non-static method called statically: " .
-                            "{$rc->getName()}::$name()");
+                            "$rc->name::$name()");
                     }
                     $rm->setAccessible(true);
                     return $rm->invokeArgs(null, $args);
                 }
-                if (method_exists($rc->getName(), '__callStatic')) {
-                    return $rc->getName()::$name(...$args);
+                if (method_exists($rc->name, '__callStatic')) {
+                    return $rc->name::$name(...$args);
                 }
                 throw new ProxyException(
-                    "Call to undefined method: {$rc->getName()}::$name()");
+                    "Call to undefined method: $rc->name::$name()");
             }
 
             private static function getStaticReflectionProperty(string $name)
             {
                 $rc = self::$rc;
-                if (property_exists($rc->getName(), $name)) {
+                if (property_exists($rc->name, $name)) {
                     $rp = $rc->getProperty($name);
                     if (!$rp->isStatic()) {
                         throw new ProxyException(
                             "Access to undeclared static property: " .
-                            "{$rc->getName()}::\$$name");
+                            "$rc->name::\$$name");
                     }
                     $rp->setAccessible(true);
                     return $rp;
                 }
                 throw new ProxyException(
                     "Access to undeclared static property: " .
-                    "{$rc->getName()}::\$$name");
+                    "$rc->name::\$$name");
             }
 
             public static function getStatic(string $name)
@@ -83,17 +83,17 @@ class Proxy
 
                     public function __call(string $name, array $args)
                     {
-                        if (method_exists($this->ro->getName(), $name)) {
+                        if (method_exists($this->ro->name, $name)) {
                             $rm = $this->ro->getMethod($name);
                             $rm->setAccessible(true);
                             return $rm->invokeArgs($this->ins, $args);
                         }
-                        if (method_exists($this->ro->getName(), '__call')) {
+                        if (method_exists($this->ro->name, '__call')) {
                             return $this->ins->$name(...$args);
                         }
                         throw new ProxyException(
                             "Call to undefined method: " .
-                            "{$this->ro->getName()}::$name()");
+                            "{$this->ro->name}::$name()");
                     }
 
                     private function getReflectionProperty(string $name)
@@ -104,7 +104,7 @@ class Proxy
                             return $rp;
                         }
                         throw new ProxyException(
-                            "Undefined property: {$this->ro->getName()}::\$$name");
+                            "Undefined property: {$this->ro->name}::\$$name");
                     }
 
                     public function __get(string $name)
@@ -130,11 +130,14 @@ class Proxy
                             try {
                                 $this->__call('__set', [$name, $value]);
                                 return;
-                            } catch (ProxyException $_) { }
+                            } catch (ProxyException $_) { } // If __set() is undefined,
+                                                            // fallback to the actual property.
                             if (isset($property)) {
-                                throw $e;
+                                throw $e; // Static property exists,
+                                          // so you cannot create a new field.
                             } else {
-                                $this->ins->$name = $value;
+                                $this->ins->$name = $value; // Property does not exists
+                                                            // so you can create a new field.
                             }
                         }
                     }
