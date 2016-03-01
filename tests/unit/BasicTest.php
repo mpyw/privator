@@ -40,7 +40,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testGetStaticProperty()
     {
-        $value = $this->Basic->new()->privateStaticProperty;
+        $value = $this->Basic::new()->privateStaticProperty;
         $this->assertEquals('privateStaticPropertyValue', $value);
     }
 
@@ -57,7 +57,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testGetInstanceProperty()
     {
-        $value = $this->Basic->new()->privateProperty;
+        $value = $this->Basic::new()->privateProperty;
         $this->assertEquals('privatePropertyValue', $value);
     }
 
@@ -77,7 +77,7 @@ class BasicTest extends \Codeception\TestCase\Test
      */
     public function testGetUndefinedProperty()
     {
-        $this->Basic->new()->undefined;
+        $this->Basic::new()->undefined;
     }
 
     public function testSetStaticPropertyStatically()
@@ -89,7 +89,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testSetStaticProperty()
     {
-        $ins = $this->Basic->new();
+        $ins = $this->Basic::new();
         $ins->privateStaticProperty = 'newValue';
         $this->assertEquals('newValue', $ins->privateStaticProperty);
     }
@@ -108,7 +108,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testSetInstanceProperty()
     {
-        $ins = $this->Basic->new();
+        $ins = $this->Basic::new();
         $ins->privateProperty = 'newValue';
         $this->assertEquals('newValue', $ins->privateProperty);
     }
@@ -125,7 +125,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testSetUndefinedProperty()
     {
-        $ins = $this->Basic->new();
+        $ins = $this->Basic::new();
         $ins->undefined = 'newValue';
         $this->assertEquals('newValue', $ins->undefined);
         (function ($tester) {
@@ -142,7 +142,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testStaticMethod()
     {
-        $return = $this->Basic->new()->privateStaticMethod("test");
+        $return = $this->Basic::new()->privateStaticMethod("test");
         $this->assertEquals("privateStaticMethod(test) called", $return);
     }
 
@@ -158,7 +158,7 @@ class BasicTest extends \Codeception\TestCase\Test
 
     public function testInstanceMethod()
     {
-        $return = $this->Basic->new()->privateMethod("test");
+        $return = $this->Basic::new()->privateMethod("test");
         $this->assertEquals("privateMethod(test) called", $return);
     }
 }
