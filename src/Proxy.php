@@ -6,6 +6,11 @@ use mpyw\Privator\ProxyException;
 
 class Proxy
 {
+    /**
+     * Create anonymous proxy class of your class.
+     * @param  string $classname
+     * @return class@anonymous
+     */
     public static function get(string $classname)
     {
         return new class($classname)
@@ -17,6 +22,12 @@ class Proxy
                 self::$rc = new \ReflectionClass($classname);
             }
 
+            /**
+             * Call static method of your class.
+             * @param  string $name
+             * @param  array  $args
+             * @return mixed
+             */
             public static function __callStatic(string $name, array $args)
             {
                 $rc = self::$rc;
@@ -55,11 +66,25 @@ class Proxy
                     "$rc->name::\$$name");
             }
 
+            /**
+             * Get static property of your class.
+             * If you want to call your own "static function getStatic()":
+             *   $proxy->__callStatic('getStatic', $args)
+             * @param  string $name
+             * @return mixed
+             */
             public static function getStatic(string $name)
             {
                 return self::getStaticReflectionProperty($name)->getValue();
             }
 
+            /**
+             * Set static property of your class.
+             * If you want to call your own "static function setStatic()":
+             *   $proxy->__callStatic('setStatic', $args)
+             * @param string $name
+             * @param mixed  $value
+             */
             public static function setStatic(string $name, $value)
             {
                 self::getStaticReflectionProperty($name)->setValue($name, $value);
@@ -105,6 +130,12 @@ class Proxy
                         $this->ro = new \ReflectionObject($this->ins);
                     }
 
+                    /**
+                     * Call instance method of your class.
+                     * @param  string $name
+                     * @param  array  $args
+                     * @return mixed
+                     */
                     public function __call(string $name, array $args)
                     {
                         if (method_exists($this->ro->name, $name)) {
@@ -131,6 +162,11 @@ class Proxy
                             "Undefined property: {$this->ro->name}::\$$name");
                     }
 
+                    /**
+                     * Get property of your object.
+                     * @param  string $name
+                     * @return mixed
+                     */
                     public function __get(string $name)
                     {
                         try {
@@ -145,6 +181,11 @@ class Proxy
                         }
                     }
 
+                    /**
+                     * Set property of your object.
+                     * @param  string $name
+                     * @param  mixed  $value
+                     */
                     public function __set(string $name, $value)
                     {
                         try {
