@@ -17,7 +17,8 @@ class Proxy
                 self::$rc = new \ReflectionClass($classname);
             }
 
-            public static function __callStatic(string $name, array $args) {
+            public static function __callStatic(string $name, array $args)
+            {
                 $rc = self::$rc;
                 if (method_exists($rc->name, $name)) {
                     $rm = $rc->getMethod($name);
