@@ -43,6 +43,34 @@ class MagicTest extends \Codeception\TestCase\Test
         $return = $this->Magic::undefinedStaticMethod('arg');
     }
 
+    public function testValidCallDirectly()
+    {
+        $return = $this->Magic::newWithoutConstructor()->__call('magicMethod', ['arg']);
+        $this->assertEquals('magicMethod(arg) called', $return);
+    }
+
+    /**
+     * @expectedException \BadMethodCallException
+     */
+    public function testInvalidCallDirectly()
+    {
+        $this->Magic::newWithoutConstructor()->__call('undefinedMethod', ['arg']);
+    }
+
+    public function testValidCallStaticDirectly()
+    {
+        $return = $this->Magic::__callStatic('staticMagicMethod', ['arg']);
+        $this->assertEquals('staticMagicMethod(arg) called', $return);
+    }
+
+    /**
+     * @expectedException \BadMethodCallException
+     */
+    public function testInvalidCallStaticDirectly()
+    {
+        $this->Magic::__callStatic('undefinedMethod', ['arg']);
+    }
+
     public function testGetAndSet()
     {
         $ins = $this->Magic::newWithoutConstructor();
