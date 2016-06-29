@@ -37,7 +37,7 @@ class Proxy
                     "Call to undefined method: $rc->name::$name()");
             }
 
-            private static function getStaticReflectionProperty(string $name)
+            private static function getStaticReflectionProperty(string $name) : \ReflectionProperty
             {
                 $rc = self::$rc;
                 if (property_exists($rc->name, $name)) {
