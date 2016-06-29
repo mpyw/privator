@@ -17,7 +17,7 @@ class MagicTest extends \Codeception\TestCase\Test
 
     public function testValidCall()
     {
-        $return = $this->Magic::new()->magicMethod('arg');
+        $return = $this->Magic::newWithoutConstructor()->magicMethod('arg');
         $this->assertEquals('magicMethod(arg) called', $return);
     }
 
@@ -26,7 +26,7 @@ class MagicTest extends \Codeception\TestCase\Test
      */
     public function testInvalidCall()
     {
-        $this->Magic::new()->undefinedMethod('arg');
+        $this->Magic::newWithoutConstructor()->undefinedMethod('arg');
     }
 
     public function testValidCallStatic()
@@ -45,7 +45,7 @@ class MagicTest extends \Codeception\TestCase\Test
 
     public function testGetAndSet()
     {
-        $ins = $this->Magic::new();
+        $ins = $this->Magic::newWithoutConstructor();
         $this->assertNull($ins->foo);
         $ins->foo = 'bar';
         $this->assertEquals('bar', $ins->foo);

@@ -65,7 +65,30 @@ class Proxy
                 self::getStaticReflectionProperty($name)->setValue($name, $value);
             }
 
-            public static function new(array $args = null)
+            /**
+             * Create anonymous proxy object of your class.
+             * If you want to call your own "static function new()":
+             *   $proxy->__callStatic('new', $args)
+             * @param  mixed ...$args
+             * @return class@anonymous
+             */
+            public static function new(...$args)
+            {
+                return self::newInstance($args);
+            }
+
+            /**
+             * Create anonymous proxy object of your class without constructor.
+             * If you want to call your own "static function newWithoutConstructor()":
+             *   $proxy->__callStatic('newWithoutConstructor', $args)
+             * @return class@anonymous
+             */
+            public static function newWithoutConstructor()
+            {
+                return self::newInstance();
+            }
+
+            private static function newInstance(array $args = null)
             {
                 return new class(self::$rc, $args)
                 {
