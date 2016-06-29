@@ -7,7 +7,7 @@ Utils for testing private methods and properties on PHP 7.0+
 Install via Composer.
 
 ```sh
-composer require mpyw/privator:~1.0 --dev
+composer require mpyw/privator:~2.0 --dev
 ```
 
 ## Usage
