@@ -16,7 +16,6 @@ cache:
 before_script:
   - composer self-update
   - composer require phpunit/phpunit --dev --no-update
-  - composer require codeception/specify --dev --no-update
   - composer update
   - mkdir -p build/logs
 
