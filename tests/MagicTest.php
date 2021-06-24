@@ -1,18 +1,24 @@
 <?php
 
-require __DIR__ . '/MagicClass.php';
+namespace Mpyw\Privator\Tests;
 
-use mpyw\Privator\Proxy;
-use mpyw\Privator\ProxyException;
+use Mpyw\Privator\ClassProxyInterface;
+use Mpyw\Privator\Proxy;
+use PHPUnit\Framework\TestCase;
 
-/**
- * @requires PHP 7.0
- */
-class MagicTest extends \Codeception\TestCase\Test
+class MagicTest extends TestCase
 {
-    public function _before()
+    /**
+     * @var MagicClass|ClassProxyInterface
+     */
+    protected $Magic;
+
+    /**
+     * @before
+     */
+    public function before()
     {
-        $this->Magic = Proxy::get(Magic::class);
+        $this->Magic = Proxy::get(MagicClass::class);
     }
 
     public function testValidCall()
@@ -21,11 +27,10 @@ class MagicTest extends \Codeception\TestCase\Test
         $this->assertEquals('magicMethod(arg) called', $return);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidCall()
     {
+        $this->expectException(\BadMethodCallException::class);
+
         $this->Magic::newWithoutConstructor()->undefinedMethod('arg');
     }
 
@@ -35,12 +40,11 @@ class MagicTest extends \Codeception\TestCase\Test
         $this->assertEquals('staticMagicMethod(arg) called', $return);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidCallStatic()
     {
-        $return = $this->Magic::undefinedStaticMethod('arg');
+        $this->expectException(\BadMethodCallException::class);
+
+        $this->Magic::undefinedStaticMethod('arg');
     }
 
     public function testValidCallDirectly()
@@ -49,11 +53,10 @@ class MagicTest extends \Codeception\TestCase\Test
         $this->assertEquals('magicMethod(arg) called', $return);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidCallDirectly()
     {
+        $this->expectException(\BadMethodCallException::class);
+
         $this->Magic::newWithoutConstructor()->__call('undefinedMethod', ['arg']);
     }
 
@@ -63,11 +66,10 @@ class MagicTest extends \Codeception\TestCase\Test
         $this->assertEquals('staticMagicMethod(arg) called', $return);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidCallStaticDirectly()
     {
+        $this->expectException(\BadMethodCallException::class);
+
         $this->Magic::__callStatic('undefinedMethod', ['arg']);
     }
 

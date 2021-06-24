@@ -1,11 +1,15 @@
 <?php
 
-class Basic
+namespace Mpyw\Privator\Tests;
+
+class BasicClass
 {
     private static $privateStaticProperty = 'privateStaticPropertyValue';
     private $privateProperty = 'privatePropertyValue';
 
-    private function __construct(string $var) { }
+    private function __construct(string $var)
+    {
+    }
 
     private static function privateStaticMethod(string $arg)
     {
