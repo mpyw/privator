@@ -1,6 +1,8 @@
 <?php
 
-class Magic
+namespace Mpyw\Privator\Tests;
+
+class MagicClass
 {
     private $____PRIVATES____;
 

@@ -1,18 +1,25 @@
 <?php
 
-require __DIR__ . '/BasicClass.php';
+namespace Mpyw\Privator\Tests;
 
-use mpyw\Privator\Proxy;
-use mpyw\Privator\ProxyException;
+use Mpyw\Privator\ClassProxyInterface;
+use Mpyw\Privator\Proxy;
+use Mpyw\Privator\ProxyException;
+use PHPUnit\Framework\TestCase;
 
-/**
- * @requires PHP 7.0
- */
-class BasicTest extends \Codeception\TestCase\Test
+class BasicTest extends TestCase
 {
-    public function _before()
+    /**
+     * @var BasicClass|ClassProxyInterface
+     */
+    protected $Basic;
+
+    /**
+     * @before
+     */
+    public function before()
     {
-        $this->Basic = Proxy::get(Basic::class);
+        $this->Basic = Proxy::get(BasicClass::class);
     }
 
     public function testNewWithoutConstructor()
@@ -21,14 +28,16 @@ class BasicTest extends \Codeception\TestCase\Test
         $this->assertEquals('privatePropertyValue', $basic->privateProperty);
     }
 
-    /**
-     * @expectedException        TypeError
-     * @expectedExceptionMessage Argument 1 passed to Basic::__construct()
-     *                           must be of the type string, none given
-     */
     public function testNewWithInvalidArguments()
     {
-        $basic = $this->Basic::new();
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage(
+            \version_compare(PHP_VERSION, '8', '>=')
+                ? 'Mpyw\Privator\Tests\BasicClass::__construct(): Argument #1 ($var) must be of type string, null given'
+                : 'Argument 1 passed to Mpyw\Privator\Tests\BasicClass::__construct() must be of the type string, null given'
+        );
+
+        $basic = $this->Basic::new(null);
         $this->assertEquals('privatePropertyValue', $basic->privateProperty);
     }
 
@@ -44,13 +53,11 @@ class BasicTest extends \Codeception\TestCase\Test
         $this->assertEquals('privateStaticPropertyValue', $value);
     }
 
-    /**
-     * @expectedException        mpyw\Privator\ProxyException
-     * @expectedExceptionMessage Access to undeclared static property:
-     *                           Basic::$privateProperty
-     */
     public function testGetInstancePropertyStatically()
     {
+        $this->expectException(ProxyException::class);
+        $this->expectExceptionMessage('Access to undeclared static property: Mpyw\Privator\Tests\BasicClass::$privateProperty');
+
         $value = $this->Basic::getStatic('privateProperty');
         $this->assertEquals('privatePropertyValue', $value);
     }
@@ -61,22 +68,19 @@ class BasicTest extends \Codeception\TestCase\Test
         $this->assertEquals('privatePropertyValue', $value);
     }
 
-    /**
-     * @expectedException        mpyw\Privator\ProxyException
-     * @expectedExceptionMessage Access to undeclared static property:
-     *                           Basic::$undefined
-     */
     public function testGetUndefinedPropertyStatically()
     {
+        $this->expectException(ProxyException::class);
+        $this->expectExceptionMessage('Access to undeclared static property: Mpyw\Privator\Tests\BasicClass::$undefined');
+
         $this->Basic::getStatic('undefined');
     }
 
-    /**
-     * @expectedException        mpyw\Privator\ProxyException
-     * @expectedExceptionMessage Undefined property: Basic::$undefined
-     */
     public function testGetUndefinedProperty()
     {
+        $this->expectException(ProxyException::class);
+        $this->expectExceptionMessage('Undefined property: Mpyw\Privator\Tests\BasicClass::$undefined');
+
         $this->Basic::newWithoutConstructor()->undefined;
     }
 
@@ -94,13 +98,11 @@ class BasicTest extends \Codeception\TestCase\Test
         $this->assertEquals('newValue', $ins->privateStaticProperty);
     }
 
-    /**
-     * @expectedException        mpyw\Privator\ProxyException
-     * @expectedExceptionMessage Access to undeclared static property:
-     *                           Basic::$privateProperty
-     */
     public function testSetInstancePropertyStatically()
     {
+        $this->expectException(ProxyException::class);
+        $this->expectExceptionMessage('Access to undeclared static property: Mpyw\Privator\Tests\BasicClass::$privateProperty');
+
         $this->Basic::setStatic('privateProperty', 'newValue');
         $value = $this->Basic::getStatic('privateProperty');
         $this->assertEquals('newValue', $value);
@@ -113,13 +115,11 @@ class BasicTest extends \Codeception\TestCase\Test
         $this->assertEquals('newValue', $ins->privateProperty);
     }
 
-    /**
-     * @expectedException        mpyw\Privator\ProxyException
-     * @expectedExceptionMessage Access to undeclared static property:
-     *                           Basic::$undefined
-     */
     public function testSetUndefinedPropertyStatically()
     {
+        $this->expectException(ProxyException::class);
+        $this->expectExceptionMessage('Access to undeclared static property: Mpyw\Privator\Tests\BasicClass::$undefined');
+
         $this->Basic::setStatic('undefined', 'newValue');
     }
 
@@ -146,13 +146,11 @@ class BasicTest extends \Codeception\TestCase\Test
         $this->assertEquals("privateStaticMethod(test) called", $return);
     }
 
-    /**
-     * @expectedException        mpyw\Privator\ProxyException
-     * @expectedExceptionMessage Non-static method called statically:
-     *                           Basic::privateMethod()
-     */
     public function testInstanceMethodStatically()
     {
+        $this->expectException(ProxyException::class);
+        $this->expectExceptionMessage('Non-static method called statically: Mpyw\Privator\Tests\BasicClass::privateMethod()');
+
         $this->Basic::privateMethod("test");
     }
 

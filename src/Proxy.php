@@ -1,22 +1,23 @@
 <?php
 
-namespace mpyw\Privator;
-
-use mpyw\Privator\ProxyException;
+namespace Mpyw\Privator;
 
 class Proxy
 {
     /**
      * Create anonymous proxy class of your class.
+     *
      * @param  string $classname
-     * @return class@anonymous
+     * @return mixed
      */
     public static function get(string $classname)
     {
-        return new class($classname)
-        {
+        return new class($classname) implements ClassProxyInterface {
             private static $rc;
 
+            /**
+             * @param string $classname
+             */
             public function __construct(string $classname)
             {
                 self::$rc = new \ReflectionClass($classname);
@@ -24,6 +25,7 @@ class Proxy
 
             /**
              * Call static method of your class.
+             *
              * @param  string $name
              * @param  array  $args
              * @return mixed
@@ -31,45 +33,50 @@ class Proxy
             public static function __callStatic(string $name, array $args)
             {
                 $rc = self::$rc;
-                if (method_exists($rc->name, $name)) {
+                if (\method_exists($rc->name, $name)) {
                     $rm = $rc->getMethod($name);
                     if (!$rm->isStatic()) {
                         throw new ProxyException(
                             "Non-static method called statically: " .
-                            "$rc->name::$name()");
+                            "$rc->name::$name()"
+                        );
                     }
                     $rm->setAccessible(true);
                     return $rm->invokeArgs(null, $args);
                 }
-                if (method_exists($rc->name, '__callStatic')) {
+                if (\method_exists($rc->name, '__callStatic')) {
                     return $rc->name::$name(...$args);
                 }
                 throw new ProxyException(
-                    "Call to undefined method: $rc->name::$name()");
+                    "Call to undefined method: $rc->name::$name()"
+                );
             }
 
             private static function getStaticReflectionProperty(string $name) : \ReflectionProperty
             {
                 $rc = self::$rc;
-                if (property_exists($rc->name, $name)) {
+                if (\property_exists($rc->name, $name)) {
                     $rp = $rc->getProperty($name);
                     if (!$rp->isStatic()) {
                         throw new ProxyException(
                             "Access to undeclared static property: " .
-                            "$rc->name::\$$name");
+                            "$rc->name::\$$name"
+                        );
                     }
                     $rp->setAccessible(true);
                     return $rp;
                 }
                 throw new ProxyException(
                     "Access to undeclared static property: " .
-                    "$rc->name::\$$name");
+                    "$rc->name::\$$name"
+                );
             }
 
             /**
              * Get static property of your class.
              * If you want to call your own "static function getStatic()":
              *   $proxy->__callStatic('getStatic', $args)
+             *
              * @param  string $name
              * @return mixed
              */
@@ -82,6 +89,7 @@ class Proxy
              * Set static property of your class.
              * If you want to call your own "static function setStatic()":
              *   $proxy->__callStatic('setStatic', $args)
+             *
              * @param string $name
              * @param mixed  $value
              */
@@ -94,8 +102,9 @@ class Proxy
              * Create anonymous proxy object of your class.
              * If you want to call your own "static function new()":
              *   $proxy->__callStatic('new', $args)
+             *
              * @param  mixed ...$args
-             * @return class@anonymous
+             * @return mixed|InstanceProxyInterface
              */
             public static function new(...$args)
             {
@@ -106,7 +115,8 @@ class Proxy
              * Create anonymous proxy object of your class without constructor.
              * If you want to call your own "static function newWithoutConstructor()":
              *   $proxy->__callStatic('newWithoutConstructor', $args)
-             * @return class@anonymous
+             *
+             * @return mixed|InstanceProxyInterface
              */
             public static function newWithoutConstructor()
             {
@@ -115,8 +125,7 @@ class Proxy
 
             private static function newInstance(array $args = null)
             {
-                return new class(self::$rc, $args)
-                {
+                return new class(self::$rc, $args) implements InstanceProxyInterface {
                     private $ro;
                     private $ins;
 
@@ -132,38 +141,42 @@ class Proxy
 
                     /**
                      * Call instance method of your class.
+                     *
                      * @param  string $name
                      * @param  array  $args
                      * @return mixed
                      */
                     public function __call(string $name, array $args)
                     {
-                        if (method_exists($this->ro->name, $name)) {
+                        if (\method_exists($this->ro->name, $name)) {
                             $rm = $this->ro->getMethod($name);
                             $rm->setAccessible(true);
                             return $rm->invokeArgs($this->ins, $args);
                         }
-                        if (method_exists($this->ro->name, '__call')) {
+                        if (\method_exists($this->ro->name, '__call')) {
                             return $this->ins->$name(...$args);
                         }
                         throw new ProxyException(
                             "Call to undefined method: " .
-                            "{$this->ro->name}::$name()");
+                            "{$this->ro->name}::$name()"
+                        );
                     }
 
                     private function getReflectionProperty(string $name)
                     {
-                        if (property_exists($this->ins, $name)) {
+                        if (\property_exists($this->ins, $name)) {
                             $rp = $this->ro->getProperty($name);
                             $rp->setAccessible(true);
                             return $rp;
                         }
                         throw new ProxyException(
-                            "Undefined property: {$this->ro->name}::\$$name");
+                            "Undefined property: {$this->ro->name}::\$$name"
+                        );
                     }
 
                     /**
                      * Get property of your object.
+                     *
                      * @param  string $name
                      * @return mixed
                      */
@@ -183,6 +196,7 @@ class Proxy
 
                     /**
                      * Set property of your object.
+                     *
                      * @param  string $name
                      * @param  mixed  $value
                      */
@@ -195,8 +209,9 @@ class Proxy
                             try {
                                 $this->__call('__set', [$name, $value]);
                                 return;
-                            } catch (ProxyException $_) { } // If __set() is undefined,
-                                                            // fallback to the actual property.
+                            } catch (ProxyException $_) {
+                            } // If __set() is undefined,
+                            // fallback to the actual property.
                             if (isset($property)) {
                                 throw $e; // Static property exists,
                                           // so you cannot create a new field.

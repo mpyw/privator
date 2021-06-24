@@ -1,5 +1,7 @@
 <?php
 
-namespace mpyw\Privator;
+namespace Mpyw\Privator;
 
-class ProxyException extends \LogicException { }
+class ProxyException extends \LogicException
+{
+}

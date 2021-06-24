@@ -2,24 +2,26 @@ language: php
 
 php:
   - 7.0
-
-install:
-  - composer install
-  - ./vendor/bin/codecept build
-
-sudo: false
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
+  - 8.0
 
 cache:
   directories:
     - ./vendor
     - $HOME/.composer/cache
 
+before_script:
+  - composer self-update
+  - composer require phpunit/phpunit --dev --no-update
+  - composer require codeception/specify --dev --no-update
+  - composer update
+  - mkdir -p build/logs
+
 script:
-  - php vendor/bin/codecept run unit --coverage --coverage-xml
+  - php -dxdebug.mode=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-branches:
-  only:
-    - master
-
-after_script:
+after_success:
   - travis_retry php vendor/bin/coveralls
